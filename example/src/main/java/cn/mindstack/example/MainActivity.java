@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
                 int y = (height - cropHeight) / 2;
 
                 RectF cropRect = new RectF(x, y, x + cropWidth, y + cropHeight);
-                hv.setup(new Matrix(), imageRect, cropRect, false);//aspectX != 0 && aspectY != 0);
+                hv.setup(new Matrix(), imageRect, cropRect, true);//aspectX != 0 && aspectY != 0);
                 hv.setFocus(true);
                 highlightFrame.add(hv);
             }
