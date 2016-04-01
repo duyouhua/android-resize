@@ -52,8 +52,8 @@ public class HighlightView {
     private static final float HANDLE_RADIUS_DP = 12f;
     private static final float OUTLINE_DP = 2f;
 
-    enum ModifyMode { None, Move, Grow }
-    enum HandleMode { Changing, Always, Never }
+    public enum ModifyMode { None, Move, Grow }
+    public enum HandleMode { Changing, Always, Never }
 
     RectF cropRect; // Image space
     Rect drawRect; // Screen space
@@ -123,7 +123,7 @@ public class HighlightView {
         return dp * viewContext.getResources().getDisplayMetrics().density;
     }
 
-    protected void draw(Canvas canvas) {
+    public void draw(Canvas canvas) {
         canvas.save();
         Path path = new Path();
         outlinePaint.setStrokeWidth(outlineWidth);
@@ -262,7 +262,7 @@ public class HighlightView {
 
     // Handles motion (dx, dy) in screen space.
     // The "edge" parameter specifies which edges the user is dragging.
-    void handleMotion(int edge, float dx, float dy) {
+    public void handleMotion(int edge, float dx, float dy) {
         Rect r = computeLayout();
         if (edge == MOVE) {
             // Convert to image space before sending to moveBy()
@@ -286,7 +286,7 @@ public class HighlightView {
     }
 
     // Grows the cropping rectangle by (dx, dy) in image space
-    void moveBy(float dx, float dy) {
+    public void moveBy(float dx, float dy) {
         Rect invalRect = new Rect(drawRect);
 
         cropRect.offset(dx, dy);
@@ -307,7 +307,7 @@ public class HighlightView {
     }
 
     // Grows the cropping rectangle by (dx, dy) in image space.
-    void growBy(float dx, float dy) {
+    public void growBy(float dx, float dy) {
         if (maintainAspectRatio) {
             if (dx != 0) {
                 dy = dx / initialAspectRatio;

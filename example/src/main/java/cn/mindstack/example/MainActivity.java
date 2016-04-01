@@ -6,7 +6,6 @@ import android.graphics.RectF;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-import cn.mindstack.androidresize.HighlightFrame;
 import cn.mindstack.androidresize.HighlightView;
 
 public class MainActivity extends AppCompatActivity {
