@@ -4,7 +4,6 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/android-resize.iml" filepath="$PROJECT_DIR$/android-resize.iml" />
       <module fileurl="file://$PROJECT_DIR$/androidresize/androidresize.iml" filepath="$PROJECT_DIR$/androidresize/androidresize.iml" />
-      <module fileurl="file://$PROJECT_DIR$/example/app.iml" filepath="$PROJECT_DIR$/example/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/example/example.iml" filepath="$PROJECT_DIR$/example/example.iml" />
     </modules>
   </component>
