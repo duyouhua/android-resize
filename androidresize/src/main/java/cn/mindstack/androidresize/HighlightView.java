@@ -54,6 +54,7 @@ public class HighlightView {
 
     public enum ModifyMode { None, Move, Grow }
     public enum HandleMode { Changing, Always, Never }
+    public enum ShapeMode { RECT, CIRCLE }
 
     RectF cropRect; // Image space
     Rect drawRect; // Screen space
@@ -71,6 +72,7 @@ public class HighlightView {
 
     private ModifyMode modifyMode = ModifyMode.None;
     private HandleMode handleMode = HandleMode.Changing;
+    private ShapeMode shapeMode = ShapeMode.RECT;
     private boolean maintainAspectRatio;
     private float initialAspectRatio;
     private float handleRadius;
@@ -80,6 +82,15 @@ public class HighlightView {
     public HighlightView(View context) {
         viewContext = context;
         initStyles(context.getContext());
+        // we need to use canvas.clipPath function.
+        // clipPath with hardware acceleration is only supported in API level 18 and higher,
+        // on API levels from 11 to 17 it needs to be turned off.
+        // @sse http://developer.android.com/intl/zh-cn/guide/topics/graphics/hardware-accel.html#unsupported
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2
+                && Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            // Disable LAYER_TYPE_SOFTWARE, if 11=<Android Version< 18,
+            context.setLayerType(context.LAYER_TYPE_SOFTWARE, null);
+        }
     }
 
     private void initStyles(Context context) {
@@ -91,6 +102,7 @@ public class HighlightView {
             showCircle = attributes.getBoolean(R.styleable.HighlightViewStyle_showCircle, false);
             highlightColor = attributes.getColor(R.styleable.HighlightViewStyle_highlightColor, DEFAULT_HIGHLIGHT_COLOR);
             handleMode = HandleMode.values()[attributes.getInt(R.styleable.HighlightViewStyle_showHandles, 0)];
+            shapeMode = ShapeMode.CIRCLE.values()[attributes.getInt(R.styleable.HighlightViewStyle_shapeMode, 0)];
         } finally {
             attributes.recycle();
         }
@@ -134,15 +146,15 @@ public class HighlightView {
             Rect viewDrawingRect = new Rect();
             viewContext.getDrawingRect(viewDrawingRect);
 
-            path.addRect(new RectF(drawRect), Path.Direction.CW);
+            if (shapeMode == ShapeMode.RECT) {
+                path.addRect(new RectF(drawRect), Path.Direction.CW);
+            } else {
+                path.addCircle(drawRect.centerX(), drawRect.centerY(), drawRect.width() / 2, Path.Direction.CW);
+            }
             outlinePaint.setColor(highlightColor);
 
-            if (isClipPathSupported(canvas)) {
-                canvas.clipPath(path, Region.Op.DIFFERENCE);
-                canvas.drawRect(viewDrawingRect, outsidePaint);
-            } else {
-                drawOutsideFallback(canvas);
-            }
+            canvas.clipPath(path, Region.Op.DIFFERENCE);
+            canvas.drawRect(viewDrawingRect, outsidePaint);
 
             canvas.restore();
             canvas.drawPath(path, outlinePaint);
